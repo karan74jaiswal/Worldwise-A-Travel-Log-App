@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { useCities } from "../contexts/CitiesContext";
 import styles from "./City.module.css";
 import { useParams, useNavigate } from "react-router-dom";
-
+import Button from "./Button";
+import Spinner from "./Spinner";
 const formatDate = (date) =>
   new Intl.DateTimeFormat("en", {
     day: "numeric",
@@ -13,28 +15,18 @@ const formatDate = (date) =>
 function City() {
   const navigate = useNavigate();
   const {
-    state: { cities },
-    dispatch,
+    state: { currentCity, loading: isLoading },
+    getCurrentCity,
   } = useCities();
   const { id } = useParams();
-  const [currentCity] = cities.filter((city) => id === city.id);
-  // TEMP DATA
-  // const currentCity = {
-  //   cityName: "Lisbon",
-  //   emoji: "🇵🇹",
-  //   date: "2027-10-31T15:59:59.138Z",
-  //   notes: "My favorite city so far!",
-  // };
-
-  // const currentCity = city;
+  useEffect(() => {
+    getCurrentCity(id);
+  }, [id]);
 
   const { cityName, emoji, date, notes } = currentCity;
-
+  if (isLoading) return <Spinner />;
   return (
-    <div
-      className={styles.city}
-      onClick={() => dispatch({ type: "handleActiveCity", payload: id })}
-    >
+    <div className={styles.city}>
       <div className={styles.row}>
         <h6>city name</h6>
         <h3>
@@ -66,8 +58,9 @@ function City() {
       </div>
 
       <div>
-        <button onClick={() => navigate("..")}>Back</button>
-        {/* <ButtonBack /> */}
+        <Button type="back" onClick={() => navigate("..")}>
+          &larr; Back
+        </Button>
       </div>
     </div>
   );
