@@ -13,6 +13,11 @@ const reducer = function (state, action) {
         ...state,
         loading: action.payload,
       };
+    case "handleActiveCity":
+      return {
+        ...state,
+        currentCityId: action.payload,
+      };
     default:
       console.log("No such action type defined");
   }
@@ -22,6 +27,7 @@ const useData = function () {
   const [state, dispatch] = useReducer(reducer, {
     cities: [],
     loading: false,
+    currentCityId: null,
   });
 
   useEffect(() => {
