@@ -1,7 +1,7 @@
 // "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=0&longitude=0"
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import styles from "./Form.module.css";
 import Button from "./Button";
 
@@ -19,7 +19,10 @@ function Form() {
   const [date, setDate] = useState(new Date());
   const [notes, setNotes] = useState("");
   const navigate = useNavigate();
-
+  const [searchparams, setSearchParams] = useSearchParams();
+  const lat = searchparams.get("lat");
+  const lng = searchparams.get("lng");
+  console.log("Form search Queries are ", lat, "  ", lng);
   return (
     <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
       <div className={styles.row}>
