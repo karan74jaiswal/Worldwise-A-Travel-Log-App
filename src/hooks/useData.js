@@ -20,6 +20,13 @@ const reducer = function (state, action) {
       };
     case "addNewCity":
       return { ...state, cities: [...state.cities, action.payload] };
+    case "deleteCity":
+      return {
+        ...state,
+        cities: state.cities.filter((city) => city.id !== action.payload),
+        currentCity:
+          state.currentCity.id === action.payload ? {} : state.currentCity,
+      };
     default:
       console.log("No such action type defined");
   }
@@ -90,8 +97,28 @@ const useData = function () {
       dispatch({ type: "setLoading", payload: false });
     }
   };
+  const deleteCity = async function (id) {
+    try {
+      dispatch({ type: "setLoading", payload: true });
 
-  return [state, dispatch, getCurrentCity, createNewCity];
+      await fetch(`http://localhost:3000/cities/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      dispatch({
+        type: "deleteCity",
+        payload: id,
+      });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      dispatch({ type: "setLoading", payload: false });
+    }
+  };
+
+  return [state, dispatch, getCurrentCity, createNewCity, deleteCity];
 };
 
 export default useData;
