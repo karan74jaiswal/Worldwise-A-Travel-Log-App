@@ -7,13 +7,10 @@ import PageNotFound from "./pages/PageNotFound";
 import AppLayout from "./pages/AppLayout";
 import CityList from "./components/CityList";
 import CountryList from "./components/CountryList";
-// import useData from "./hooks/useData";
 import City from "./components/City";
 import Form from "./components/Form";
-import { CitiesProvider, useCities } from "./contexts/CitiesContext";
+import { CitiesProvider } from "./contexts/CitiesContext";
 function App() {
-  // const [{ cities, loading }, dispatch] = useData();
-
   return (
     <CitiesProvider>
       <BrowserRouter>

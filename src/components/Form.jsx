@@ -1,7 +1,7 @@
 // "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=0&longitude=0"
 
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import styles from "./Form.module.css";
@@ -20,23 +20,21 @@ export function convertToEmoji(countryCode) {
 }
 
 function Form() {
-  const {
-    state: { loading: isLoading },
-    dispatch,
-    createNewCity,
-  } = useCities();
+  const { createNewCity } = useCities();
+  const navigate = useNavigate();
+  const [lat, lng] = useCoordinates();
+
   const [cityName, setCityName] = useState("");
   const [country, setCountry] = useState("");
   const [date, setDate] = useState(new Date());
   const [notes, setNotes] = useState("");
   const [emoji, setEmoji] = useState(null);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
-  const [lat, lng] = useCoordinates();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!lat || !lng) return;
-    dispatch({ type: "setLoading", payload: true });
+    setLoading(true);
     setError(null);
     const controller = new AbortController();
     async function getCityDetails() {
@@ -54,11 +52,10 @@ function Form() {
         setCityName(city || locality);
         setCountry(countryName);
         setEmoji(convertToEmoji(countryCode));
-        // console.log(res);
       } catch (err) {
         setError(err.message);
       } finally {
-        dispatch({ type: "setLoading", payload: false });
+        setLoading(false);
       }
     }
 
@@ -69,7 +66,7 @@ function Form() {
         controller.abort();
       }
     };
-  }, [lat, lng, dispatch]);
+  }, [lat, lng]);
 
   async function handleFormSubmit(e) {
     e.preventDefault();
@@ -90,11 +87,11 @@ function Form() {
   }
   if (!lat || !lng)
     return <Message message="Start by clicking somewhere on the map" />;
-  if (isLoading) return <Spinner />;
+  if (loading) return <Spinner />;
   if (error) return <Message message={error} />;
   return (
     <form
-      className={`${styles.form} ${isLoading ? styles.loading : ""}`}
+      className={`${styles.form} ${loading ? styles.loading : ""}`}
       onSubmit={handleFormSubmit}
     >
       <div className={styles.row}>

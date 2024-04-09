@@ -1,6 +1,6 @@
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, useMap, useMapEvent } from "react-leaflet";
-import { useCities } from "../contexts/CitiesContext";
+
 import styles from "./Map.module.css";
 import { useEffect, useState } from "react";
 import MarkerList from "./MarkerList";
@@ -34,7 +34,7 @@ function Map() {
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <MarkerList />
         <ChangeCenter position={mapPosition} />

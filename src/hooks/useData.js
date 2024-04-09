@@ -6,6 +6,7 @@ const reducer = function (state, action) {
       return {
         ...state,
         cities: action.payload,
+        loading: false,
       };
 
     case "setLoading":
@@ -17,16 +18,25 @@ const reducer = function (state, action) {
       return {
         ...state,
         currentCity: action.payload,
+        loading: false,
       };
     case "addNewCity":
-      return { ...state, cities: [...state.cities, action.payload] };
+      return {
+        ...state,
+        cities: [...state.cities, action.payload],
+        loading: false,
+        currentCity: action.payload,
+      };
     case "deleteCity":
       return {
         ...state,
         cities: state.cities.filter((city) => city.id !== action.payload),
         currentCity:
           state.currentCity.id === action.payload ? {} : state.currentCity,
+        loading: false,
       };
+    case "error":
+      return { ...state, loading: false, error: action.payload };
     default:
       console.log("No such action type defined");
   }
@@ -37,6 +47,7 @@ const useData = function () {
     cities: [],
     loading: false,
     currentCity: {},
+    error: "",
   });
 
   useEffect(() => {
@@ -49,15 +60,14 @@ const useData = function () {
           payload: data,
         });
       } catch (err) {
-        console.log(err);
-      } finally {
-        dispatch({ type: "setLoading", payload: false });
+        dispatch({ type: "error", payload: err.message });
       }
     }
     fetchData();
   }, []);
 
   const getCurrentCity = async function (id) {
+    if (+id === +state.currentCity.id) return;
     dispatch({ type: "setLoading", payload: true });
     try {
       const data = await (
@@ -69,15 +79,13 @@ const useData = function () {
         payload: data,
       });
     } catch (err) {
-      console.log(err);
-    } finally {
-      dispatch({ type: "setLoading", payload: false });
+      dispatch({ type: "error", payload: err.message });
     }
   };
 
   const createNewCity = async function (newCity) {
+    dispatch({ type: "setLoading", payload: true });
     try {
-      dispatch({ type: "setLoading", payload: true });
       const city = await (
         await fetch(`http://localhost:3000/cities`, {
           method: "POST",
@@ -92,15 +100,12 @@ const useData = function () {
         payload: city,
       });
     } catch (err) {
-      console.log(err);
-    } finally {
-      dispatch({ type: "setLoading", payload: false });
+      dispatch({ type: "error", payload: err.message });
     }
   };
   const deleteCity = async function (id) {
+    dispatch({ type: "setLoading", payload: true });
     try {
-      dispatch({ type: "setLoading", payload: true });
-
       await fetch(`http://localhost:3000/cities/${id}`, {
         method: "DELETE",
         headers: {
@@ -112,13 +117,11 @@ const useData = function () {
         payload: id,
       });
     } catch (err) {
-      console.log(err);
-    } finally {
-      dispatch({ type: "setLoading", payload: false });
+      dispatch({ type: "error", payload: err.message });
     }
   };
 
-  return [state, dispatch, getCurrentCity, createNewCity, deleteCity];
+  return { state, getCurrentCity, createNewCity, deleteCity };
 };
 
 export default useData;
