@@ -7,6 +7,7 @@ import MarkerList from "./MarkerList";
 import Button from "./Button";
 import useGeolocation from "../hooks/useGeoLocation";
 import useCoordinates from "../hooks/useCoordinates";
+import User from "./User";
 function Map() {
   const {
     isLoading: isLoadingPosition,
@@ -45,6 +46,7 @@ function Map() {
           {isLoadingPosition ? "Loading..." : "USE YOUR POSITION"}
         </Button>
       ) : null}
+      <User />
     </div>
   );
 }
