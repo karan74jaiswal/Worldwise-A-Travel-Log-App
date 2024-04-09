@@ -18,6 +18,8 @@ const reducer = function (state, action) {
         ...state,
         currentCity: action.payload,
       };
+    case "addNewCity":
+      return { ...state, cities: [...state.cities, action.payload] };
     default:
       console.log("No such action type defined");
   }
@@ -65,7 +67,31 @@ const useData = function () {
       dispatch({ type: "setLoading", payload: false });
     }
   };
-  return [state, dispatch, getCurrentCity];
+
+  const createNewCity = async function (newCity) {
+    try {
+      dispatch({ type: "setLoading", payload: true });
+      const city = await (
+        await fetch(`http://localhost:3000/cities`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newCity),
+        })
+      ).json();
+      dispatch({
+        type: "addNewCity",
+        payload: city,
+      });
+    } catch (err) {
+      console.log(err);
+    } finally {
+      dispatch({ type: "setLoading", payload: false });
+    }
+  };
+
+  return [state, dispatch, getCurrentCity, createNewCity];
 };
 
 export default useData;

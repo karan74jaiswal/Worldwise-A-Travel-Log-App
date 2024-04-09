@@ -1,9 +1,15 @@
 // "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=0&longitude=0"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import styles from "./Form.module.css";
 import Button from "./Button";
+import { useCities } from "../contexts/CitiesContext";
+import Spinner from "./Spinner";
+import useCoordinates from "../hooks/useCoordinates";
+import Message from "./Message";
 
 export function convertToEmoji(countryCode) {
   const codePoints = countryCode
@@ -14,17 +20,83 @@ export function convertToEmoji(countryCode) {
 }
 
 function Form() {
+  const {
+    state: { loading: isLoading },
+    dispatch,
+    createNewCity,
+  } = useCities();
   const [cityName, setCityName] = useState("");
   const [country, setCountry] = useState("");
   const [date, setDate] = useState(new Date());
   const [notes, setNotes] = useState("");
+  const [emoji, setEmoji] = useState(null);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [searchparams, setSearchParams] = useSearchParams();
-  const lat = searchparams.get("lat");
-  const lng = searchparams.get("lng");
-  console.log("Form search Queries are ", lat, "  ", lng);
+  const [lat, lng] = useCoordinates();
+
+  useEffect(() => {
+    if (!lat || !lng) return;
+    dispatch({ type: "setLoading", payload: true });
+    setError(null);
+    const controller = new AbortController();
+    async function getCityDetails() {
+      try {
+        const { city, countryCode, countryName, locality } = await (
+          await fetch(
+            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}`,
+            { signal: controller.signal }
+          )
+        ).json();
+        if (!city || !countryName || !countryCode)
+          throw new Error(
+            "That doesn't seem to be a city. Click somewhere else 😉"
+          );
+        setCityName(city || locality);
+        setCountry(countryName);
+        setEmoji(convertToEmoji(countryCode));
+        // console.log(res);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        dispatch({ type: "setLoading", payload: false });
+      }
+    }
+
+    const getCityTimeOut = setTimeout(getCityDetails, 1000);
+    return () => {
+      if (getCityTimeOut) {
+        clearTimeout(getCityTimeOut);
+        controller.abort();
+      }
+    };
+  }, [lat, lng, dispatch]);
+
+  async function handleFormSubmit(e) {
+    e.preventDefault();
+    if (!cityName || !date) return;
+    const newCity = {
+      cityName,
+      country,
+      emoji,
+      date,
+      notes,
+      position: {
+        lat,
+        lng,
+      },
+    };
+    await createNewCity(newCity);
+    navigate("../cities");
+  }
+  if (!lat || !lng)
+    return <Message message="Start by clicking somewhere on the map" />;
+  if (isLoading) return <Spinner />;
+  if (error) return <Message message={error} />;
   return (
-    <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+    <form
+      className={`${styles.form} ${isLoading ? styles.loading : ""}`}
+      onSubmit={handleFormSubmit}
+    >
       <div className={styles.row}>
         <label htmlFor="cityName">City name</label>
         <input
@@ -32,15 +104,16 @@ function Form() {
           onChange={(e) => setCityName(e.target.value)}
           value={cityName}
         />
-        {/* <span className={styles.flag}>{emoji}</span> */}
+        <span className={styles.flag}>{emoji}</span>
       </div>
 
       <div className={styles.row}>
         <label htmlFor="date">When did you go to {cityName}?</label>
-        <input
+        <DatePicker
           id="date"
-          onChange={(e) => setDate(e.target.value)}
-          value={date}
+          selected={date}
+          onChange={(date) => setDate(date)}
+          dateFormat="dd/MM/yyyy"
         />
       </div>
 
@@ -57,7 +130,7 @@ function Form() {
         <Button onClick={() => {}} type="primary">
           ADD
         </Button>
-        <Button onClick={() => navigate(-1)} type="back">
+        <Button onClick={() => navigate("../cities")} type="back">
           &larr; Back
         </Button>
       </div>

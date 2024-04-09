@@ -10,13 +10,17 @@ function CountryList() {
   if (isLoading) return <Spinner />;
   if (countries.length > 0) {
     const newCountries = Array.from(
-      new Set(
-        countries.map((el) => {
-          return { country: el.country, emoji: el.emoji, id: el.id };
-        })
-      ),
+      countries
+        .reduce((acc, { country, emoji, id }) => {
+          if (!acc.has(country)) {
+            acc.set(country, { country, emoji, id });
+          }
+          return acc;
+        }, new Map())
+        .values(),
       (_) => _
     );
+
     return (
       <ul className={styles.countryList}>
         {newCountries.map((country) => (

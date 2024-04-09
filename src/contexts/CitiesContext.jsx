@@ -3,9 +3,11 @@ import useData from "../hooks/useData";
 const CitiesContext = createContext();
 
 function CitiesProvider({ children }) {
-  const [state, dispatch, getCurrentCity] = useData();
+  const [state, dispatch, getCurrentCity, createNewCity] = useData();
   return (
-    <CitiesContext.Provider value={{ state, dispatch, getCurrentCity }}>
+    <CitiesContext.Provider
+      value={{ state, dispatch, getCurrentCity, createNewCity }}
+    >
       {children}
     </CitiesContext.Provider>
   );

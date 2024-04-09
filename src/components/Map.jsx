@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import MarkerList from "./MarkerList";
 import Button from "./Button";
 import useGeolocation from "../hooks/useGeoLocation";
+import useCoordinates from "../hooks/useCoordinates";
 function Map() {
   const {
     isLoading: isLoadingPosition,
@@ -13,10 +14,8 @@ function Map() {
     getPosition,
   } = useGeolocation();
   const [mapPosition, setMapPosition] = useState([51.505, -0.09]);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [lat, lng] = useCoordinates();
 
-  const lng = searchParams.get("lng");
-  const lat = searchParams.get("lat");
   useEffect(() => {
     if (lat && lng) setMapPosition([+lat, +lng]);
   }, [lat, lng]);
@@ -49,10 +48,10 @@ function Map() {
     </div>
   );
 }
+
 function ChangeCenter({ position }) {
   const map = useMap();
   map.setView(position);
-
   return null;
 }
 
