@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from "react";
+import { useReducer, useEffect, useCallback } from "react";
 
 const reducer = function (state, action) {
   switch (action.type) {
@@ -66,22 +66,24 @@ const useData = function () {
     fetchData();
   }, []);
 
-  const getCurrentCity = async function (id) {
-    if (+id === +state.currentCity.id) return;
-    dispatch({ type: "setLoading", payload: true });
-    try {
-      const data = await (
-        await fetch(`http://localhost:3000/cities/${id}`)
-      ).json();
-      console.log(data);
-      dispatch({
-        type: "handleActiveCity",
-        payload: data,
-      });
-    } catch (err) {
-      dispatch({ type: "error", payload: err.message });
-    }
-  };
+  const getCurrentCity = useCallback(
+    async function (id) {
+      if (+id === +state.currentCity.id) return;
+      dispatch({ type: "setLoading", payload: true });
+      try {
+        const data = await (
+          await fetch(`http://localhost:3000/cities/${id}`)
+        ).json();
+        dispatch({
+          type: "handleActiveCity",
+          payload: data,
+        });
+      } catch (err) {
+        dispatch({ type: "error", payload: err.message });
+      }
+    },
+    [state.currentCity.id]
+  );
 
   const createNewCity = async function (newCity) {
     dispatch({ type: "setLoading", payload: true });

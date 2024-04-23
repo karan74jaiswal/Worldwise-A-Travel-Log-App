@@ -1,20 +1,14 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, useMemo } from "react";
 import useData from "../hooks/useData";
 const CitiesContext = createContext();
 
 function CitiesProvider({ children }) {
   const { state, getCurrentCity, createNewCity, deleteCity } = useData();
+  const value = useMemo(() => {
+    return { state, getCurrentCity, createNewCity, deleteCity };
+  }, [state, getCurrentCity, createNewCity, deleteCity]);
   return (
-    <CitiesContext.Provider
-      value={{
-        state,
-        getCurrentCity,
-        createNewCity,
-        deleteCity,
-      }}
-    >
-      {children}
-    </CitiesContext.Provider>
+    <CitiesContext.Provider value={value}>{children}</CitiesContext.Provider>
   );
 }
 
