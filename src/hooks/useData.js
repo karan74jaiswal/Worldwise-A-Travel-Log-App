@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useCallback } from "react";
+import { useReducer, useCallback } from "react";
 
 const reducer = function (state, action) {
   switch (action.type) {
@@ -50,20 +50,15 @@ const useData = function () {
     error: "",
   });
 
-  useEffect(() => {
-    async function fetchData() {
-      dispatch({ type: "setLoading", payload: true });
-      try {
-        const data = await (await fetch(`http://localhost:3000/cities`)).json();
-        dispatch({
-          type: "getCitiesData",
-          payload: data,
-        });
-      } catch (err) {
-        dispatch({ type: "error", payload: err.message });
-      }
-    }
-    fetchData();
+  const getCities = useCallback(function (data) {
+    const temp = data.map((city) => {
+      console.log(city);
+      return { ...city, date: city.date.toDate() };
+    });
+    dispatch({
+      type: "getCitiesData",
+      payload: temp,
+    });
   }, []);
 
   const getCurrentCity = useCallback(
@@ -71,9 +66,7 @@ const useData = function () {
       if (+id === +state.currentCity.id) return;
       dispatch({ type: "setLoading", payload: true });
       try {
-        const data = await (
-          await fetch(`http://localhost:3000/cities/${id}`)
-        ).json();
+        const [data] = state.cities.filter((city) => city.id === id);
         dispatch({
           type: "handleActiveCity",
           payload: data,
@@ -82,48 +75,31 @@ const useData = function () {
         dispatch({ type: "error", payload: err.message });
       }
     },
-    [state.currentCity.id]
+    [state.currentCity.id, state.cities]
   );
 
   const createNewCity = async function (newCity) {
     dispatch({ type: "setLoading", payload: true });
-    try {
-      const city = await (
-        await fetch(`http://localhost:3000/cities`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newCity),
-        })
-      ).json();
-      dispatch({
-        type: "addNewCity",
-        payload: city,
-      });
-    } catch (err) {
-      dispatch({ type: "error", payload: err.message });
-    }
+    dispatch({
+      type: "addNewCity",
+      payload: newCity,
+    });
   };
   const deleteCity = async function (id) {
     dispatch({ type: "setLoading", payload: true });
-    try {
-      await fetch(`http://localhost:3000/cities/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      dispatch({
-        type: "deleteCity",
-        payload: id,
-      });
-    } catch (err) {
-      dispatch({ type: "error", payload: err.message });
-    }
+    dispatch({
+      type: "deleteCity",
+      payload: id,
+    });
   };
 
-  return { state, getCurrentCity, createNewCity, deleteCity };
+  return {
+    state,
+    getCurrentCity,
+    createNewCity,
+    deleteCity,
+    getCities,
+  };
 };
 
 export default useData;

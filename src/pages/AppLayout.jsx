@@ -5,12 +5,12 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 function AppLayout() {
-  const { isUserAuthenticated } = useAuth();
+  const { userObject: user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isUserAuthenticated) navigate("/");
-  }, [isUserAuthenticated, navigate]);
+    if (!user) navigate("/");
+  }, [user, navigate]);
 
   return (
     <div className={styles.app}>

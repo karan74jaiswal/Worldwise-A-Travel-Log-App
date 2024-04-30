@@ -21,6 +21,12 @@
   border: 1px solid currentColor;
 }
 
+.google {
+  background-color: aqua;
+  color: black;
+  font-weight: 700;
+}
+
 .position {
   font-weight: 700;
   position: absolute;

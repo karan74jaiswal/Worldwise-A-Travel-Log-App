@@ -1,20 +1,20 @@
 import styles from "./User.module.css";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-
+import { signoutUser } from "../utils/firebase";
 function User() {
   const navigate = useNavigate();
-  const { userObject: user, logout } = useAuth();
+  const { userObject: user } = useAuth();
 
   function handleClick() {
-    logout();
+    signoutUser();
     navigate("/");
   }
   if (!user) return;
   return (
     <div className={styles.user}>
-      <img src={user.avatar} alt={user.name} />
-      <span>Welcome, {user.name}</span>
+      {/* {user.photoURL && <img src={user.photoURL} alt={user.displayName} />} */}
+      <span>Welcome, {user.displayName.split(" ")[0]}</span>
       <button onClick={handleClick}>Logout</button>
     </div>
   );

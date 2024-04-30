@@ -5,9 +5,15 @@ function Button({ children, onClick, type }) {
       ? styles.primary
       : type === "back"
       ? styles.back
+      : type === "google"
+      ? styles.google
       : styles.position;
   return (
-    <button className={`${styles.btn} ${className}`} onClick={onClick}>
+    <button
+      className={`${styles.btn} ${className}`}
+      type={type === "google" ? "button" : "submit"}
+      onClick={onClick}
+    >
       {children}
     </button>
   );

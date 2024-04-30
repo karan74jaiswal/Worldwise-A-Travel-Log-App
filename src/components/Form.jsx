@@ -10,6 +10,7 @@ import { useCities } from "../contexts/CitiesContext";
 import Spinner from "./Spinner";
 import useCoordinates from "../hooks/useCoordinates";
 import Message from "./Message";
+import { nanoid } from "nanoid";
 
 export function convertToEmoji(countryCode) {
   const codePoints = countryCode
@@ -72,6 +73,7 @@ function Form() {
     e.preventDefault();
     if (!cityName || !date) return;
     const newCity = {
+      id: nanoid(4),
       cityName,
       country,
       emoji,

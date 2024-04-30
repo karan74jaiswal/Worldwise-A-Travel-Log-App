@@ -1,9 +1,18 @@
-import { createContext, useContext, useMemo } from "react";
+import { createContext, useContext, useEffect, useMemo } from "react";
+import { updateCitiesInUserDocument } from "../utils/firebase";
 import useData from "../hooks/useData";
+import { useAuth } from "./AuthContext";
 const CitiesContext = createContext();
 
 function CitiesProvider({ children }) {
-  const { state, getCurrentCity, createNewCity, deleteCity } = useData();
+  const { state, getCurrentCity, createNewCity, deleteCity, getCities } =
+    useData();
+  const { userObject, userData } = useAuth();
+
+  useEffect(() => {
+    if (userObject && userData) getCities(userData.cities);
+  }, [userObject, userData, getCities]);
+
   const value = useMemo(() => {
     return { state, getCurrentCity, createNewCity, deleteCity };
   }, [state, getCurrentCity, createNewCity, deleteCity]);

@@ -119,6 +119,18 @@
         "lat": "55.78892895389265",
         "lng": "-3.6474609375000004"
       }
+    },
+    {
+      "id": "08ca",
+      "cityName": "Chesterton and Kingston",
+      "country": "United Kingdom of Great Britain and Northern Ireland (the)",
+      "emoji": "🇬🇧",
+      "date": "2024-04-30T17:28:48.816Z",
+      "notes": "uhoi",
+      "position": {
+        "lat": "52.214338608258224",
+        "lng": "-1.5161132812500002"
+      }
     }
   ]
 }

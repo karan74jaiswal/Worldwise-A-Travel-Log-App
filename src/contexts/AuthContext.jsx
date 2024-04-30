@@ -1,39 +1,30 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { getUserData, onAuthChange } from "../utils/firebase";
 const AuthContext = createContext();
-const FAKE_USER = {
-  name: "Jack",
-  email: "jack@example.com",
-  password: "qwerty",
-  avatar: "https://i.pravatar.cc/100?u=zz",
-};
+
 function AuthProvider({ children }) {
   const [userObject, setUserObject] = useState(null);
-  const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+  const [userData, setUserData] = useState(null);
 
-  function login(email, pass) {
-    if (email === FAKE_USER.email && pass === FAKE_USER.password) {
-      setUserObject(FAKE_USER);
-      setIsUserAuthenticated(true);
-    }
-  }
+  const value = useMemo(() => {
+    return { userObject, userData };
+  }, [userData, userObject]);
 
-  function logout() {
-    setUserObject(null);
-    setIsUserAuthenticated(false);
-  }
+  useEffect(() => {
+    const unsubscribe = onAuthChange(async (user) => {
+      if (user) {
+        setUserObject(user);
+        const data = await getUserData(user);
+        setUserData(data);
+      } else {
+        setUserObject(null);
+        setUserData(null);
+      }
+    });
+    return unsubscribe;
+  }, []);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        userObject,
-        isUserAuthenticated,
-        login,
-        logout,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 function useAuth() {
