@@ -10,7 +10,6 @@ function CitiesProvider({ children }) {
   const { userData } = useAuth();
 
   useEffect(() => {
-    console.log(userData);
     if (userData) getCities(userData.cities);
   }, [userData, getCities]);
 
