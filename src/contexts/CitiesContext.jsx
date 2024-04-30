@@ -7,11 +7,12 @@ const CitiesContext = createContext();
 function CitiesProvider({ children }) {
   const { state, getCurrentCity, createNewCity, deleteCity, getCities } =
     useData();
-  const { userObject, userData } = useAuth();
+  const { userData } = useAuth();
 
   useEffect(() => {
-    if (userObject && userData) getCities(userData.cities);
-  }, [userObject, userData, getCities]);
+    console.log(userData);
+    if (userData) getCities(userData.cities);
+  }, [userData, getCities]);
 
   const value = useMemo(() => {
     return { state, getCurrentCity, createNewCity, deleteCity };

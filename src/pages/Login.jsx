@@ -1,6 +1,6 @@
 import styles from "./Login.module.css";
 import PageNav from "../components/PageNav";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import SigninForm from "../components/SigninForm";

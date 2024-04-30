@@ -1,5 +1,4 @@
 import { useReducer, useCallback } from "react";
-
 const reducer = function (state, action) {
   switch (action.type) {
     case "getCitiesData":

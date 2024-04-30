@@ -18,7 +18,6 @@ function CityItem({ city }) {
     e.preventDefault();
     deleteCity(city.id);
   }
-  console.log(city.date);
   return (
     <li>
       <Link

@@ -2,18 +2,15 @@ import { useState } from "react";
 import styles from "../pages/Login.module.css";
 import Button from "../components/Button";
 import { signUpWithEmail, createNewUserDocument } from "../utils/firebase";
-import { useAuth } from "../contexts/AuthContext";
 function SignupForm() {
-  const { userObject } = useAuth();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const handleSubmit = function (e) {
+  const handleSubmit = async function (e) {
     e.preventDefault();
     if (!fullName || !email || !password) return;
-    signUpWithEmail(email, password);
-    createNewUserDocument(userObject.uid, fullName);
+    const { user } = await signUpWithEmail(email, password);
+    await createNewUserDocument(user, fullName);
   };
 
   return (

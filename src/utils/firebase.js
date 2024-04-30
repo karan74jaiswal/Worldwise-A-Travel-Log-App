@@ -47,12 +47,16 @@ googleProvider.setCustomParameters({
 
 // Authentication Functions
 // Signup with Email and Password
-const signUpWithEmail = async (email, password) =>
-  await createUserWithEmailAndPassword(auth, email, password);
+const signUpWithEmail = async (email, password) => {
+  const newUser = await createUserWithEmailAndPassword(auth, email, password);
+  return newUser;
+};
 
 // Signin with Email and Password
-const signinWithEmail = async (email, password) =>
-  await signInWithEmailAndPassword(auth, email, password);
+const signinWithEmail = async (email, password) => {
+  const userAuth = await signInWithEmailAndPassword(auth, email, password);
+  return userAuth;
+};
 
 // Signin using Google
 const signinWithGoogle = () => signInWithRedirect(auth, googleProvider);

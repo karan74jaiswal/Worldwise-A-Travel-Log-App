@@ -1,7 +1,6 @@
 import { useState } from "react";
 import styles from "../pages/Login.module.css";
 import Button from "../components/Button";
-import { useAuth } from "../contexts/AuthContext";
 import { signinWithGoogle, signinWithEmail } from "../utils/firebase";
 function SigninForm() {
   const [email, setEmail] = useState("jack@example.com");
@@ -10,7 +9,6 @@ function SigninForm() {
     e.preventDefault();
     if (!email || !password) return;
     signinWithEmail(email, password);
-    // login(email, password);
   };
   const handleGoogleSignin = function (e) {
     e.preventDefault();
