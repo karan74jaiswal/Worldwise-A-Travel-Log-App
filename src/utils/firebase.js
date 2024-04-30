@@ -14,7 +14,6 @@ import {
   collection,
   doc,
   setDoc,
-  updateDoc,
   writeBatch,
   getDoc,
 } from "firebase/firestore";
@@ -76,6 +75,7 @@ const createNewUserDocument = async (user, fullName) => {
   await setDoc(documentRef, {
     cities: [],
     fullName,
+    photoURL: `https://ui-avatars.com/api/?name=${fullName[0]}`,
     createdAt: new Date(),
   });
 };
@@ -89,16 +89,17 @@ const getUserData = async (user) => {
       cities: [],
       fullName: user.displayName,
       createdAt: new Date(),
+      photoURL: `https://ui-avatars.com/api/?name=${user.displayName[0]}`,
     });
     documentSnap = await getDoc(documentRef);
   }
   return documentSnap.data();
 };
 
-const updateCitiesInUserDocument = async (user, cities) => {
+const updateCitiesInUserDocument = async (uid, cities) => {
   const batch = writeBatch(db);
   const collectionRef = collection(db, "users");
-  const documentRef = doc(collectionRef, user.uid);
+  const documentRef = doc(collectionRef, uid);
   batch.update(documentRef, { cities });
   await batch.commit();
 };

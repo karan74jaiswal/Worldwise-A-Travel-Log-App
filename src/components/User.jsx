@@ -10,9 +10,12 @@ function User() {
     navigate("/");
   }
   if (!user || !userData) return;
+  const profilePicture = user.photoURL || userData.photoURL;
   return (
     <div className={styles.user}>
-      {user.photoURL && <img src={user.photoURL} alt={user.displayName} />}
+      {profilePicture && (
+        <img src={profilePicture} alt={user.displayName || userData.fullName} />
+      )}
       <span>
         Welcome, {(user.displayName || userData.fullName)?.split(" ")?.[0]}
       </span>

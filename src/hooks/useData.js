@@ -51,7 +51,6 @@ const useData = function () {
 
   const getCities = useCallback(function (data) {
     const temp = data.map((city) => {
-      console.log(city);
       return { ...city, date: city.date.toDate() };
     });
     dispatch({

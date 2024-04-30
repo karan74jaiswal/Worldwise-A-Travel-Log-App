@@ -7,11 +7,16 @@ const CitiesContext = createContext();
 function CitiesProvider({ children }) {
   const { state, getCurrentCity, createNewCity, deleteCity, getCities } =
     useData();
-  const { userData } = useAuth();
+  const { userData, userObject: user } = useAuth();
 
   useEffect(() => {
     if (userData) getCities(userData.cities);
   }, [userData, getCities]);
+
+  useEffect(() => {
+    if (user && state.cities.length >= 0)
+      updateCitiesInUserDocument(user.uid, state.cities);
+  }, [state.cities]);
 
   const value = useMemo(() => {
     return { state, getCurrentCity, createNewCity, deleteCity };

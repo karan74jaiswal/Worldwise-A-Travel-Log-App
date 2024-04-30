@@ -3,8 +3,8 @@ import styles from "../pages/Login.module.css";
 import Button from "../components/Button";
 import { signinWithGoogle, signinWithEmail } from "../utils/firebase";
 function SigninForm() {
-  const [email, setEmail] = useState("jack@example.com");
-  const [password, setPassword] = useState("qwerty");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const handleSubmit = function (e) {
     e.preventDefault();
     if (!email || !password) return;
