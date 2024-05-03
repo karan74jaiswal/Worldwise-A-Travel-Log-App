@@ -1,6 +1,6 @@
 import styles from "./PageNav.module.css";
 import Logo from "./Logo";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { memo } from "react";
 
 const PageNav = memo(function PageNav() {
