@@ -34,3 +34,14 @@
   display: flex;
   gap: 20px;
 }
+
+.formSwitch:link,
+.formSwitch:visited,
+.formSwitch:active {
+  font-size: 16px;
+  color: green;
+}
+
+.formSwitch:hover {
+  color: red;
+}

@@ -2,6 +2,7 @@ import { useState } from "react";
 import styles from "../pages/Login.module.css";
 import Button from "../components/Button";
 import { signinWithGoogle, signinWithEmail } from "../utils/firebase";
+import { Link } from "react-router-dom";
 function SigninForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -42,6 +43,9 @@ function SigninForm() {
           Sign in with Google
         </Button>
       </div>
+      <Link className={styles.formSwitch} to="signup">
+        Not a User? Signup!
+      </Link>
     </form>
   );
 }

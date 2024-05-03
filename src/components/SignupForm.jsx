@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import styles from "../pages/Login.module.css";
 import Button from "../components/Button";
 import { signUpWithEmail, createNewUserDocument } from "../utils/firebase";
@@ -47,6 +48,9 @@ function SignupForm() {
       <div>
         <Button type="primary">Signup</Button>
       </div>
+      <Link className={styles.formSwitch} to="/auth">
+        Already a User? Signin!
+      </Link>
     </form>
   );
 }

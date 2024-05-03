@@ -7,6 +7,8 @@ import Form from "./components/Form";
 import SpinnerFullPage from "./components/SpinnerFullPage";
 import { CitiesProvider } from "./contexts/CitiesContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import SigninForm from "./components/SigninForm";
+import SignupForm from "./components/SignupForm";
 
 // Replaced Static Imports with Dynamic Imports and Implemented Lazy Loading
 const Homepage = lazy(() => import("./pages/Homepage"));
@@ -26,7 +28,10 @@ function App() {
                 <Route index element={<Homepage />} />
                 <Route path="product" element={<Product />} />
                 <Route path="pricing" element={<Pricing />} />
-                <Route path="login" element={<Login />} />
+                <Route path="auth" element={<Login />}>
+                  <Route index element={<SigninForm />} />
+                  <Route path="signup" element={<SignupForm />} />
+                </Route>
 
                 <Route path="app" element={<AppLayout />}>
                   <Route index element={<Navigate replace to="cities" />} />
